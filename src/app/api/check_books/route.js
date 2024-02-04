@@ -3,19 +3,26 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGO_URL;
 
-export async function GET(req) {
+export async function POST(req) {
   try {
-    console.log("Req received");
+    const data = await req.json();
+
+    const itemsPerPage = 100;
+    const pageNum = data.pageNum;
+    const skip = (pageNum - 1) * itemsPerPage;
 
     const client = await MongoClient.connect(uri);
     const db = client.db("test");
     const collection = db.collection("Books-Dataset");
 
-    const books = await collection.find({}).limit(100).toArray();
+    const books = await collection
+      .find({})
+      .skip(skip)
+      .limit(itemsPerPage)
+      .toArray();
     client.close();
 
-    console.log(books);
-    return NextResponse.json({ message: "Req received" }, { status: 200 });
+    return NextResponse.json({ books }, { status: 200 });
   } catch (error) {
     console.log(error.message);
     return NextResponse.json(
