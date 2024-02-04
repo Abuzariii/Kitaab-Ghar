@@ -5,16 +5,16 @@ export default function FetchBooks() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/check_books", {
+      const response = await fetch("/api/get_books", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pageNum: 400 }),
+        body: JSON.stringify({ id: "65bfa1f4f433864b6f7a18d6" }),
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data.books[0]);
+        console.log(data.book);
       }
     } catch (error) {
       console.error("Error sending the request:", error.message);
