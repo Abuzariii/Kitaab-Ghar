@@ -17,9 +17,10 @@ export async function POST(req) {
   try {
     const data = await req.json();
 
+    // * Pages of Data
     const pageNum = data.pageNum;
     const itemsPerPage = 50;
-    const skip = (pageNum - 1) * itemsPerPage;
+    const skip = pageNum ? (pageNum - 1) * itemsPerPage : 0;
 
     const { client, collection } = await connect();
 
