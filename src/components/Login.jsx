@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 export default function Login() {
-  const [username_or_email, setUsername_or_email] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -11,8 +11,8 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!username_or_email.trim()) {
-      setError("Username_or_email is required.");
+    if (!email.trim()) {
+      setError("Email is required.");
       return;
     }
     if (!password.trim()) {
@@ -26,34 +26,44 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username_or_email, password }),
+        body: JSON.stringify({ email, password }),
       });
+
       if (response.status == 200) {
         const data = await response.json();
-        console.log(data);
 
-        setSuccess("Logged in successfully!");
-        setUsername_or_email("");
+        setSuccess(data.message);
+        setError("");
+        setEmail("");
         setPassword("");
-      } else {
-        setError(response.data.error || "An error occurred.");
+      }
+      // * If email doesn't exist
+      if (response.status == 404) {
+        const data = await response.json();
+        setError(data.message);
+      }
+      // * If password doesn't match
+      if (response.status == 401) {
+        const data = await response.json();
+        setError(data.message);
       }
     } catch (error) {
-      console.error("API error:", error);
+      console.error(error);
       setError("An error occurred. Please try again later.");
     }
   };
   return (
     <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
+      <h1>Login</h1>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
-      <label htmlFor="username_or_email">Username_or_email or email:</label>
+      <label htmlFor="email">Email:</label>
       <input
         type="text"
-        id="username_or_email"
-        name="username_or_email"
-        value={username_or_email}
-        onChange={(e) => setUsername_or_email(e.target.value)}
+        id="email"
+        name="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         required
         style={{ display: "block", margin: "10px 0" }}
       />
@@ -68,7 +78,7 @@ export default function Login() {
         style={{ display: "block", margin: "10px 0" }}
       />
       <button type="submit" style={{ display: "block", margin: "10px 0" }}>
-        Sign Up
+        Login
       </button>
     </form>
   );

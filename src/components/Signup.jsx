@@ -38,16 +38,18 @@ const Signup = () => {
       });
       if (response.status == 200) {
         const data = await response.json();
-        console.log(data);
 
-        setSuccess("User created successfully!");
-        // setUsername("");
-        // setFullName("");
-        // setEmail("");
-        // setPassword("");
-        // setConfirmPassword("");
-      } else {
-        setError(response.data);
+        setSuccess(data.message);
+        setUsername("");
+        setFullName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }
+      if (response.status == 302) {
+        const data = await response.json();
+
+        setError(data.message);
       }
     } catch (error) {
       console.error(error);
@@ -57,6 +59,7 @@ const Signup = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{ margin: "20px" }}>
+      <h1>Signup</h1>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
 

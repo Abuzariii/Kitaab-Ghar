@@ -7,7 +7,7 @@ export default function Home() {
     <div>
       <h1>Book Store</h1>
       <FetchBooks />
-      {/* <Signup /> */}
+      <Signup />
       <Login />
     </div>
   );
